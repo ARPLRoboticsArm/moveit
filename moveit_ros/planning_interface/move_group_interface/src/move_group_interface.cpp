@@ -930,6 +930,14 @@ public:
     }
   }
 
+  actionlib::SimpleClientGoalState getExecuteState()
+  {
+    if (!execute_action_client_)
+      return actionlib::SimpleClientGoalState::ABORTED;
+
+    return execute_action_client_->getState();
+  }
+
   double computeCartesianPath(const std::vector<geometry_msgs::Pose>& waypoints, double step, double jump_threshold,
                               moveit_msgs::RobotTrajectory& msg, const moveit_msgs::Constraints& path_constraints,
                               bool avoid_collisions, moveit_msgs::MoveItErrorCodes& error_code)
@@ -1494,6 +1502,11 @@ moveit::planning_interface::MoveItErrorCode moveit::planning_interface::MoveGrou
 {
   return impl_->execute(plan, true);
 }
+
+actionlib::SimpleClientGoalState moveit::planning_interface::MoveGroupInterface::getExecuteState()
+{
+  return impl_->getExecuteState();
+ }
 
 moveit::planning_interface::MoveItErrorCode moveit::planning_interface::MoveGroupInterface::plan(Plan& plan)
 {

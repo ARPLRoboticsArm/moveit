@@ -51,6 +51,7 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <boost/shared_ptr.hpp>
 #include <tf/tf.h>
+#include <actionlib/client/simple_client_goal_state.h>
 
 namespace moveit
 {
@@ -699,6 +700,10 @@ public:
 
   /** \brief Given a \e plan, execute it while waiting for completion. Return true on success. */
   MoveItErrorCode execute(const Plan& plan);
+
+  /** \brief Return actionlib state of the current exceuting goal. */
+  actionlib::SimpleClientGoalState getExecuteState();
+
 
   /** \brief Compute a Cartesian path that follows specified waypoints with a step size of at most \e eef_step meters
       between end effector configurations of consecutive points in the result \e trajectory. The reference frame for the
