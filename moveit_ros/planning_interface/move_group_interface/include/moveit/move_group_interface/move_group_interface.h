@@ -708,6 +708,9 @@ public:
   /** \brief Given a \e plan, execute it without waiting for completion. Return true on success. */
   MoveItErrorCode asyncExecute(const Plan& plan);
 
+  /** \brief Return actionlib state of the current exceuting goal. */
+  actionlib::SimpleClientGoalState getExecuteState();
+
   /** \brief Given a \e plan, execute it while waiting for completion. Return true on success. */
   MoveItErrorCode execute(const Plan& plan);
 
