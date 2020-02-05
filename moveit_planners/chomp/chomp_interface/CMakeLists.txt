@@ -3,13 +3,19 @@ project(moveit_planners_chomp)
 
 add_definitions(-std=c++11)
 
+# find catkin in isolation so that CATKIN_ENABLE_TESTING is defined
+find_package(catkin REQUIRED)
+if (CATKIN_ENABLE_TESTING)
+  set(CHOMP_TEST_DEPS moveit_ros_planning_interface)
+endif()
+
 find_package(catkin REQUIRED COMPONENTS
-  cmake_modules
   roscpp
   moveit_core
   pluginlib
   chomp_motion_planner
-  moveit_experimental
+  tf
+  ${CHOMP_TEST_DEPS}
 )
 
 find_package(Eigen3 REQUIRED)
@@ -30,7 +36,8 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 add_library(${PROJECT_NAME} src/chomp_interface.cpp src/chomp_planning_context.cpp)
@@ -55,10 +62,12 @@ install(TARGETS ${PROJECT_NAME} chomp_planner_plugin
 )
 
 if(CATKIN_ENABLE_TESTING)
-  find_package(catkin REQUIRED COMPONENTS rostest roscpp moveit_ros_planning_interface)
-
+  # additional test dependencies
+  find_package(rostest REQUIRED)
   add_rostest_gtest(chomp_moveit_test
     test/chomp_moveit.test
     test/chomp_moveit_test.cpp)
-  target_link_libraries(chomp_moveit_test ${catkin_LIBRARIES})
+  target_link_libraries(chomp_moveit_test
+    ${catkin_LIBRARIES}
+    ${rostest_LIBRARIES})
 endif()

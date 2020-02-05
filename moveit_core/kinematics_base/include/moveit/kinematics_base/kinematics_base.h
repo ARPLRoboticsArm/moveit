@@ -41,7 +41,6 @@
 #include <moveit_msgs/MoveItErrorCodes.h>
 #include <moveit/macros/class_forward.h>
 #include <ros/node_handle.h>
-#include <console_bridge/console.h>
 
 #include <boost/function.hpp>
 #include <string>
@@ -240,10 +239,11 @@ public:
    * redundant the same as in the seed
    * @return True if a valid solution was found, false otherwise
    */
-  virtual bool searchPositionIK(
-      const geometry_msgs::Pose& ik_pose, const std::vector<double>& ik_seed_state, double timeout,
-      std::vector<double>& solution, const IKCallbackFn& solution_callback, moveit_msgs::MoveItErrorCodes& error_code,
-      const kinematics::KinematicsQueryOptions& options = kinematics::KinematicsQueryOptions()) const = 0;
+  virtual bool
+  searchPositionIK(const geometry_msgs::Pose& ik_pose, const std::vector<double>& ik_seed_state, double timeout,
+                   std::vector<double>& solution, const IKCallbackFn& solution_callback,
+                   moveit_msgs::MoveItErrorCodes& error_code,
+                   const kinematics::KinematicsQueryOptions& options = kinematics::KinematicsQueryOptions()) const = 0;
 
   /**
    * @brief Given a desired pose of the end-effector, search for the joint angles required to reach it.
@@ -315,8 +315,7 @@ public:
     }
 
     // Otherwise throw error because this function should have been implemented
-    CONSOLE_BRIDGE_logError("moveit.kinematics_base: This kinematic solver "
-                            "does not support searchPositionIK with multiple poses");
+    ROS_ERROR_NAMED("kinematics_base", "This kinematic solver does not support searchPositionIK with multiple poses");
     return false;
   }
 
@@ -393,8 +392,8 @@ public:
       return initialize(robot_description, group_name, base_frame, tip_frames[0], search_discretization);
     }
 
-    CONSOLE_BRIDGE_logError("moveit.kinematics_base: This kinematic solver "
-                            "does not support initialization with more than one tip frames");
+    ROS_ERROR_NAMED("kinematics_base", "This kinematic solver does not support initialization "
+                                       "with more than one tip frames");
     return false;
   }
 
@@ -427,8 +426,8 @@ public:
   virtual const std::string& getTipFrame() const
   {
     if (tip_frames_.size() > 1)
-      CONSOLE_BRIDGE_logError("moveit.kinematics_base: This kinematic solver has more than one tip frame, "
-                              "do not call getTipFrame()");
+      ROS_ERROR_NAMED("kinematics_base", "This kinematic solver has more than one tip frame, "
+                                         "do not call getTipFrame()");
 
     return tip_frame_;  // for backwards-compatibility. should actually use tip_frames_[0]
   }

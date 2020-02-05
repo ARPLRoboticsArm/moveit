@@ -86,7 +86,7 @@ int initRepeatedPointTrajectory(robot_trajectory::RobotTrajectory& trajectory)
   const robot_model::JointModelGroup* group = trajectory.getGroup();
   if (!group)
   {
-    CONSOLE_BRIDGE_logError("Need to set the group");
+    ROS_ERROR_NAMED("trajectory_processing", "Need to set the group");
     return -1;
   }
   // leave initial velocity/acceleration unset
@@ -116,7 +116,7 @@ int initStraightTrajectory(robot_trajectory::RobotTrajectory& trajectory, double
   const robot_model::JointModelGroup* group = trajectory.getGroup();
   if (!group)
   {
-    CONSOLE_BRIDGE_logError("Need to set the group");
+    ROS_ERROR_NAMED("trajectory_processing", "Need to set the group");
     return -1;
   }
   // leave initial velocity/acceleration unset
@@ -205,9 +205,7 @@ TEST(TestTimeParameterization, TestRepeatedPoint)
   trajectory_processing::IterativeSplineParameterization time_parameterization(true);
   EXPECT_EQ(initRepeatedPointTrajectory(trajectory), 0);
 
-  ros::WallTime wt = ros::WallTime::now();
   EXPECT_TRUE(time_parameterization.computeTimeStamps(trajectory));
-  // std::cout << " took " << (ros::WallTime::now() - wt).toSec() << std::endl;
   printTrajectory(trajectory);
   ASSERT_LT(trajectory.getWayPointDurationFromStart(trajectory.getWayPointCount() - 1), 0.001);
 }
